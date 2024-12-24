@@ -10,21 +10,6 @@
             "request": "attach",
             "mode": "local",
             "processId": 0
-        },
-        {
-            "name": "Attach to Process",
-            "type": "go",
-            "request": "attach",
-            "mode": "local",
-            "processId": 0
-        },
-
-        {
-            "name": "Launch Package",
-            "type": "go",
-            "request": "launch",
-            "mode": "auto",
-            "program": "${fileDirname}"
         }
     ]
 }
