@@ -18,13 +18,16 @@ func main() {
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
+
+
 	err := chromedp.Run(ctx,
-		chromedp.Navigate(`https://www.google.com`),
-		//		chromedp.WaitVisible(`body > div.L3eUgb > div.o3j9`),
+		chromedp.Navigate(`https://api.production.wealthsimple.com/v1/oauth/v2/token`),
+		chromedp.FullScreenshot("#content", &outer, chromedp.ByQuery),
 	)
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("err:", err)
 	}
+	fmt.Println(outer)
 	fmt.Println("go end")
 }
