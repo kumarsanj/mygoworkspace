@@ -12,7 +12,7 @@ func sum(i, j int) int {
 }
 
 func main() {
-	fmt.Println("go")
+	fmt.Println("go ")
 	fmt.Println(sum(1, 2))
 
 	resp, err := http.Get("https://api.production.wealthsimple.com/v1/oauth/v2/token")
