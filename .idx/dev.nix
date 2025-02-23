@@ -12,9 +12,17 @@
     # pkgs.nodePackages.nodemon
     pkgs.go
     pkgs.go
+    pkgs.docker
   ];
   # Sets environment variables in the workspace
-  env = {};
+  env = {
+    DOCKER_API_VERSION="1.44";
+  };
+  services = {
+    docker = {
+      enable = true;
+    };
+  };
   idx = {
     # Search for the extensions you want on https://open-vsx.org/ and use "publisher.id"
     extensions = [

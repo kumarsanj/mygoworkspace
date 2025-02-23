@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/docker/docker/client"
@@ -15,18 +14,26 @@ import (
 
 /*
 *
-TODO install docker
+TODO: install docker
+TODO: use refactoring in vscode
+TODO: use golang debugger
 */
 func main() {
 
 	fmt.Println("inside main")
 	t := task.Task{
-		ID:          uuid.New(),
-		ContainerId: "Task-1",
-		Image:       "Image-1",
-		Disk:        1,
-		Memory:      1024,
-		State:       task.Pending,
+		ID: uuid.New(),
+		//TODO: delete below statement later
+		//ContainerId: "Task-3",
+		Name:  "test-container4",
+		Image: "postgres:13",
+		Env: []string{
+			"POSTGRES_USER:user",
+			"POSTGRES_SECRET:cube",
+		},
+		Disk:   1,
+		Memory: 1024,
+		State:  task.Pending,
 	}
 
 	te := task.TaskEvent{
@@ -43,9 +50,12 @@ func main() {
 	}
 
 	fmt.Println("inside cube main", t, te, w)
-	w.CollectStats()
-	w.StartTask()
+	w.StartTask(&t)
+	fmt.Println(w.CollectStats())
+	fmt.Println("inside cube main, after starting the task", t)
 
+	w.StopTask(&t)
+	/**
 	fmt.Println("creating a test container")
 	docker, dockerResult := createContainer()
 
@@ -57,6 +67,7 @@ func main() {
 	fmt.Println("stopping the test container")
 	time.Sleep(time.Second * 5)
 	_ = stopContainer(docker, dockerResult.ContainerId)
+	**/
 
 }
 
@@ -95,6 +106,6 @@ func stopContainer(d *task.Docker, id string) *task.DockerResult {
 		return nil
 	}
 
-	fmt.Printf("container has been stopped. %s", dr.ContainerId)
+	fmt.Printf("container has been stopped. %s\n", dr.ContainerId)
 	return &dr
 }

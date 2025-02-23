@@ -27,10 +27,16 @@ const (
 	Failed
 )
 
+/**
+TODO: below task struct is not being used. refactor it.
+*/
+
 type Task struct {
+	Name          string
 	ID            uuid.UUID
 	ContainerId   string
 	Image         string
+	Env           []string
 	Memory        int64
 	Disk          int64
 	State         State
@@ -39,6 +45,7 @@ type Task struct {
 	RestartPolicy string
 	StartTime     time.Time
 	FinishTime    time.Time
+	Docker        Docker
 }
 
 // TaskEvent is used change the State of Tasks, say from Running to Completed
@@ -49,6 +56,7 @@ type TaskEvent struct {
 	TimeStamp time.Time
 }
 
+// TODO: Rename Config to DockerConfig
 type Config struct {
 	Name          string
 	AttachStdIn   bool
@@ -139,13 +147,15 @@ func (d *Docker) Run() DockerResult {
 }
 
 func (d *Docker) Stop(id string) DockerResult {
-	fmt.Printf("Attempting to stop container: %v", id)
+	fmt.Println("Attempting to stop container:", id)
 
 	ctx := context.Background()
 
 	err := d.Client.ContainerStop(ctx, id, container.StopOptions{})
 	if err != nil {
-		log.Printf("Error stopping Container %s: %v", id, err)
+		//TODO: change this to log statement
+		fmt.Println("Error stopping Container", err)
+		//log.Printf("Error stopping Container %s: %v", id, err)
 		return DockerResult{Error: err}
 	}
 
@@ -160,4 +170,22 @@ func (d *Docker) Stop(id string) DockerResult {
 	}
 
 	return DockerResult{Action: "stop", Result: "success", Error: nil}
+}
+
+func (t *Task) CreateNewDockerConfigFromTask() Config {
+	c := Config{
+		Name:  t.Name,
+		Image: t.Image,
+		Env:   t.Env,
+	}
+	return c
+}
+
+func (t *Task) NewDocker(c Config) Docker {
+	dc, _ := client.NewClientWithOpts(client.FromEnv)
+	d := Docker{
+		Client: dc,
+		Config: c,
+	}
+	return d
 }
